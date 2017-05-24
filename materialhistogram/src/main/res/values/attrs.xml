@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MaterialHistogram">
+        <attr name="bars_number" format="integer"/>
+        <attr name="bars_color" format="color"/>
+        <attr name="bars_corner" format="dimension"/>
+        <attr name="bars_thickness_adaptive" format="boolean"/>
+        <attr name="bars_thickness" format="dimension"/>
+        <attr name="bars_padding" format="dimension"/>
+        <attr name="target_limit_show" format="boolean"/>
+        <attr name="target_limit_value" format="integer"/>
+        <attr name="axis_show" format="boolean"/>
+        <attr name="chart_show_scale" format="boolean"/>
+        <attr name="chart_alignment" format="enum">
+            <enum name="center" value="0"/>
+            <enum name="left" value="1"/>
+            <enum name="right" value="2"/>
+        </attr>
+        <attr name="chart_orientation" format="enum">
+            <enum name="orizontal" value="0"/>
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
