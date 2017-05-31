@@ -1,5 +1,6 @@
 # MaterialHistogram
 A great customizable histogram for Android apps.
+Note: this is a preview and it's not ready yet. If you are tring to use this repo, it could eventually not work. I'm still new in GitHub :D
 
 ## Installation
 ```
