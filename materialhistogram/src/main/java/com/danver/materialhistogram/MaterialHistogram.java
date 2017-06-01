@@ -206,7 +206,7 @@ public class MaterialHistogram extends View {
 
     private float fromValueToPixelHeight(float value, float maxValue){
         if (value<=0){
-            return mHeight - convertDpToPixel(3f);
+            return mHeight - convertDpToPixel(2f);
         } else {
             float coeff = (float) value/maxValue;
             return (float) mHeight - coeff*mHeight;
@@ -217,22 +217,27 @@ public class MaterialHistogram extends View {
         int x [] = {100, 50, 20, 10, 5, 1};
         boolean ended=false;
         int i=0;
-        while (!ended){
+        while (!ended && (i < 6)){
             if (maxValue/x[i]>3){
                 ended=true;
+            }else {
+                i++;
             }
-            i++;
         }
         return x[i];
     }
 
     private void drawScale(float maxValue, Canvas canvas){
         int scaleFactor = scaleFactor(maxValue);
-        int levelNumber = (int) (maxValue/scaleFactor);
+        int levelNumber = (int) Math.floor(maxValue/scaleFactor);
         int y;
+        Paint scaleLevelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        scaleLevelPaint.setColor(0xFFBDBDBD);
+        scaleLevelPaint.setStyle(Paint.Style.STROKE);
+        scaleLevelPaint.setStrokeWidth(convertDpToPixel(1.0f));
         for (int i=1; i<=levelNumber; i++){
             y = (int) fromValueToPixelHeight(scaleFactor*i, maxValue);
-            canvas.drawLine(0.0f, y, mWidth, y, mLinePaint);
+            canvas.drawLine(0.0f, y, mWidth, y, scaleLevelPaint);
         }
 
     }
