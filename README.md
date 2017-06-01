@@ -31,3 +31,5 @@ Include this material histogram library in your layout:
 
 The ```app:bars_thickness_adaptive="boolean"``` attribute set on ```"true"``` make the ```app:bars_thickness="dimension"``` attribute to be ignored
 and the chart will automatically adapt the bars thickness in order to fit the specified ```android:layout_width="dimension"``` dimension.
+
+![materialhistogram-2](https://cloud.githubusercontent.com/assets/28715404/26695775/6252f37a-470c-11e7-959a-bc64699c6222.png)
