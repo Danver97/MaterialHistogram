@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class MaterialHistogram extends View {
     private RectF mBarShape = new RectF();
     private Paint mBarsPaint;
     private Paint mLinePaint;
+    private Paint mScaleLevelsPaint;
     private ArrayList<Integer> valuesInt = new ArrayList<>(0);
     private ArrayList<Float> valuesFloat;
     private boolean valuesType;
@@ -77,15 +79,11 @@ public class MaterialHistogram extends View {
             mBarPadding = a.getDimensionPixelSize(R.styleable.MaterialHistogram_bars_padding, convertDpToPixel(2f));
             mChartAlignment = a.getInteger(R.styleable.MaterialHistogram_chart_alignment, 0);
             mAxisShow = a.getBoolean(R.styleable.MaterialHistogram_axis_show, true);
-            mChartShowScale =a.getBoolean(R.styleable.MaterialHistogram_chart_show_scale,true);
+            mChartShowScale =a.getBoolean(R.styleable.MaterialHistogram_chart_show_scale,false);
             //TODO: implement this
             mTargetLimitShow = a.getBoolean(R.styleable.MaterialHistogram_target_limit_show, false);
             mTargetLimitValue =a.getInteger(R.styleable.MaterialHistogram_target_limit_value, 15);
-            if(a.getInteger(R.styleable.MaterialHistogram_chart_orientation, 0) == 0){
-                mChartOrientation = true;
-            } else {
-                mChartOrientation = false;
-            }
+            mChartOrientation = a.getInteger(R.styleable.MaterialHistogram_chart_orientation, 0) == 0;
 
         } finally {
             a.recycle();
@@ -102,6 +100,11 @@ public class MaterialHistogram extends View {
         mLinePaint.setColor(0xFFBDBDBD);
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setStrokeWidth(convertDpToPixel(2.0f));
+
+        mScaleLevelsPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mScaleLevelsPaint.setColor(0xFFBDBDBD);
+        mScaleLevelsPaint.setStyle(Paint.Style.STROKE);
+        mScaleLevelsPaint.setStrokeWidth(convertDpToPixel(1.0f));
     }
 
     @Override
@@ -175,8 +178,8 @@ public class MaterialHistogram extends View {
             }
         }
 
-        if(mChartShowScale){
-            drawScale(maxValue, canvas);
+        if(mChartShowScale&&mAxisShow){
+            drawScale(maxValue, canvas, mScaleLevelsPaint);
         }
 
         for(int i = 0; i<mBarNumber; i++){
@@ -201,14 +204,14 @@ public class MaterialHistogram extends View {
     }
 
     private int spacingToCenter(){
-        return (int) ((mWidth - mBarThickness*mBarNumber - mBarPadding*(mBarNumber-1))/2);
+        return (mWidth - mBarThickness*mBarNumber - mBarPadding*(mBarNumber-1))/2;
     }
 
     private float fromValueToPixelHeight(float value, float maxValue){
         if (value<=0){
-            return mHeight - convertDpToPixel(3f);
+            return mHeight - convertDpToPixel(2f);
         } else {
-            float coeff = (float) value/maxValue;
+            float coeff = value /maxValue;
             return (float) mHeight - coeff*mHeight;
         }
     }
@@ -217,22 +220,24 @@ public class MaterialHistogram extends View {
         int x [] = {100, 50, 20, 10, 5, 1};
         boolean ended=false;
         int i=0;
-        while (!ended){
+        while (!ended && (i < 6)){
             if (maxValue/x[i]>3){
                 ended=true;
+                //Log.w("histogram", "maxValue: " + maxValue + " || x[i]=" + x[i]);
+            }else {
+                i++;
             }
-            i++;
         }
         return x[i];
     }
 
-    private void drawScale(float maxValue, Canvas canvas){
+    private void drawScale(float maxValue, Canvas canvas, Paint scaleLevelsPaint){
         int scaleFactor = scaleFactor(maxValue);
-        int levelNumber = (int) (maxValue/scaleFactor);
+        int levelNumber = (int) Math.floor(maxValue/scaleFactor);
         int y;
         for (int i=1; i<=levelNumber; i++){
             y = (int) fromValueToPixelHeight(scaleFactor*i, maxValue);
-            canvas.drawLine(0.0f, y, mWidth, y, mLinePaint);
+            canvas.drawLine(0.0f, y, mWidth, y, scaleLevelsPaint);
         }
 
     }
@@ -247,7 +252,7 @@ public class MaterialHistogram extends View {
 
     public void setValuesInteger(int array[]){
         int lengh = Array.getLength(array);
-        valuesInt = new ArrayList<Integer>(lengh);
+        valuesInt = new ArrayList<>(lengh);
         for(int i=0; i<lengh; i++){
             valuesInt.add(array[i]);
             if (array[i]>maxValue){
@@ -278,7 +283,7 @@ public class MaterialHistogram extends View {
 
     public void setValuesInteger(ArrayList<Integer> arrayList){
         int lengh = arrayList.size();
-        valuesInt = new ArrayList<Integer>(lengh);
+        valuesInt = new ArrayList<>(lengh);
         for (int i=0; i<lengh; i++){
             valuesInt.add(arrayList.get(i));
             if (maxValue < valuesInt.get(i)) {
@@ -362,7 +367,7 @@ public class MaterialHistogram extends View {
         updateLayout();
     }
 
-    public void setBarAdptiveThickness(boolean status){
+    public void setBarAdaptiveThickness(boolean status){
         mBarAdaptiveThickness = status;
         updateLayout();
     }
