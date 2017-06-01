@@ -9,11 +9,11 @@ compile 'com.danver97:MaterialHistogram'
 ```
 ## Usage
 
-Define 'app' namespace on root view in your layout
+Define 'app' namespace on root view in your layout:
 ```
 xmlns:app="http://schemas.android.com/apk/res-auto"
 ```
-Include this material histogram library in your layout
+Include this material histogram library in your layout:
 ```xml
 <com.danver.materialhistogram.MaterialHistogram
                             android:layout_width="dimension"
