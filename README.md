@@ -18,6 +18,7 @@ Include this material histogram library in your layout:
 <com.danver.materialhistogram.MaterialHistogram
                             android:layout_width="dimension"
                             android:layout_height="dimension"
+                            app:bars_color="color"
                             app:bars_padding="dimension"
                             app:bars_thickness="dimension"
                             app:bars_thickness_adaptive="boolean"
