@@ -35,3 +35,48 @@ The ```app:bars_thickness_adaptive="boolean"``` attribute set on ```"true"``` ma
 ![materialhistogram-2](https://cloud.githubusercontent.com/assets/28715404/26695775/6252f37a-470c-11e7-959a-bc64699c6222.png)
 
 Actually, the related method is supposed to adjust both thickness and padding in order to have a thickness:padding ratio of 8:1 (because it looks better). In the examble above only thickness have been changed.
+
+##Public methods
+
+```java
+  //Public fields
+  
+  public final static int CHART_ALIGNEMT_CENTER = 0;
+  public final static int CHART_ALIGNEMT_LEFT = 1;
+  public final static int CHART_ALIGNEMT_RIGHT = 2;
+  
+  //Setters
+  
+  public void setValues(int array[]);
+  
+  public void setValues(float array[]);
+  
+  public void setValues(ArrayList<? extends Number> arrayList);
+  
+  public void setBarColor(@ColorInt int color);
+  
+  public void setBarCorner(float dp);
+  
+  public void setBarThickness(float dp);
+  
+  public void setBarPadding(float dp);
+  
+  public void setBarAdaptiveThickness(boolean status);
+  
+  public void setChartAlignment(int alignment);
+  
+  public void setHeight(int dpHeight);
+  
+  public void setWidth(int dpWidth);
+  
+  //Getters
+  
+  public int getBarColor();
+  
+  public ArrayList getValues();
+  
+  public float getMaxValue();
+  
+  public int getBarNumber();
+
+```
