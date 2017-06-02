@@ -41,11 +41,11 @@ public class MaterialHistogram extends View {
     private int mBarSpacing = convertDpToPixel(8);
     private boolean mAxisShow;
 
-    public final static int CHART_CENTER = 0;
-    public final static int CHART_LEFT = 1;
-    public final static int CHART_RIGHT = 2;
+    public final static int CHART_ALIGNEMT_CENTER = 0;
+    public final static int CHART_ALIGNEMT_LEFT = 1;
+    public final static int CHART_ALIGNEMT_RIGHT = 2;
 
-    float maxValue=0;
+    private float maxValue=0;
 
     private RectF mBarShape = new RectF();
     private Paint mBarsPaint;
@@ -164,13 +164,13 @@ public class MaterialHistogram extends View {
         } else {
 
             switch (mChartAlignment){
-                case CHART_CENTER:
+                case CHART_ALIGNEMT_CENTER:
                     spacing = spacingToCenter();
                     break;
-                case CHART_LEFT:
+                case CHART_ALIGNEMT_LEFT:
                     spacing = mBarSpacing;
                     break;
-                case CHART_RIGHT:
+                case CHART_ALIGNEMT_RIGHT:
                     spacing = spacingToCenter()*2 - mBarSpacing;
                     break;
             }
@@ -204,6 +204,11 @@ public class MaterialHistogram extends View {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);
+    }
+
+    private int converPixelToDp(int px) {
+        DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
+        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     private int spacingToCenter(){
@@ -378,15 +383,9 @@ public class MaterialHistogram extends View {
         return mBarColor;
     }
 
-    public ArrayList getValuesInteger() {
+    public ArrayList getValues() {
         return values;
     }
-
-    /*
-    public ArrayList<Float> getValuesFloat() {
-        return valuesFloat;
-    }
-    */
 
     public float getMaxValue() {
         return maxValue;
@@ -395,4 +394,25 @@ public class MaterialHistogram extends View {
     public int getBarNumber() {
         return mBarNumber;
     }
+
+    public int getChartAlignment() {
+        return mChartAlignment;
+    }
+
+    public boolean getBarAdaptiveThicknessStatus(){
+        return mBarAdaptiveThickness;
+    }
+
+    public int getBarThicknessDp(){
+        return converPixelToDp(mBarThickness);
+    }
+
+    public int getBarPaddingDp(){
+        return converPixelToDp(mBarPadding);
+    }
+
+    public int getBarCornerDp(){
+        return converPixelToDp((int) mBarCorner);
+    }
+
 }
