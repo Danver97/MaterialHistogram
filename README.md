@@ -78,5 +78,21 @@ Actually, the related method is supposed to adjust both thickness and padding in
   public float getMaxValue();
   
   public int getBarNumber();
+  
+  public int getChartAlignment();
+  
+  public boolean getBarAdaptiveThicknessStatus();
+  
+  public int getBarThicknessDp();
+  
+  public int getBarPaddingDp();
+  
+  public int getBarCornerDp();
 
 ```
+
+## Next
+
+- Add orientation settings
+- Add average value line
+- Add target value line
