@@ -36,7 +36,7 @@ The ```app:bars_thickness_adaptive="boolean"``` attribute set on ```"true"``` ma
 
 Actually, the related method is supposed to adjust both thickness and padding in order to have a thickness:padding ratio of 8:1 (because it looks better). In the examble above only thickness have been changed.
 
-##Public methods
+## Public methods
 
 ```java
   //Public fields
