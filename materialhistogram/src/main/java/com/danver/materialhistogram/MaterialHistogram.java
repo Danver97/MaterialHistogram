@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -52,8 +51,7 @@ public class MaterialHistogram extends View {
     private Paint mBarsPaint;
     private Paint mLinePaint;
     private Paint mScaleLevelsPaint;
-    private ArrayList<Integer> valuesInt = new ArrayList<>(0);
-    private ArrayList<Float> valuesFloat;
+    private ArrayList values;
     private boolean valuesType;
 
     public MaterialHistogram(Context context, AttributeSet attrs){
@@ -63,11 +61,11 @@ public class MaterialHistogram extends View {
                 R.styleable.MaterialHistogram,
                 0, 0);
         /*
-        valuesInt.add(0);
-        valuesInt.add(6);
-        valuesInt.add(10);
-        valuesInt.add(5);
-        valuesInt.add(4);
+        values.add(0);
+        values.add(6);
+        values.add(10);
+        values.add(5);
+        values.add(4);
         */
 
         try {
@@ -148,15 +146,15 @@ public class MaterialHistogram extends View {
 
     @Override
     protected void onDraw(Canvas canvas){
-        if (valuesInt.size()!=0){
-            mBarNumber=valuesInt.size();
+        if (values.size()!=0){
+            mBarNumber= values.size();
         }
         else{
             for(int i=0; i<5; i++){
-                valuesInt.add(1);
+                values.add(1);
             }
             Log.w("histogram", "add def elem");
-            mBarNumber=valuesInt.size();
+            mBarNumber= values.size();
         }
         int spacing = 0;
         if (mBarAdaptiveThickness){
@@ -187,7 +185,12 @@ public class MaterialHistogram extends View {
             float left = spacing + ((mBarThickness + mBarPadding) * i);
             float right = spacing + mBarThickness + ((mBarThickness + mBarPadding) * i);
 
-            mBarShape.set(left, fromValueToPixelHeight(valuesInt.get(i), maxValue), right, mHeight+mBarCorner);
+            if (values.get(i) instanceof Float){
+                mBarShape.set(left, fromValueToPixelHeight((Float) values.get(i), maxValue), right, mHeight+mBarCorner);
+            } else {
+                mBarShape.set(left, fromValueToPixelHeight((int) values.get(i), maxValue), right, mHeight + mBarCorner);
+            }
+
             canvas.drawRoundRect(mBarShape, mBarCorner, mBarCorner, mBarsPaint);
         }
         if (mAxisShow) {
@@ -218,17 +221,16 @@ public class MaterialHistogram extends View {
 
     private int scaleFactor(float maxValue){
         int x [] = {100, 50, 20, 10, 5, 1};
-        boolean ended=false;
         int i=0;
-        while (!ended && (i < 6)){
+        while (i < 6){
             if (maxValue/x[i]>3){
-                ended=true;
+                return x[i];
                 //Log.w("histogram", "maxValue: " + maxValue + " || x[i]=" + x[i]);
             }else {
                 i++;
             }
         }
-        return x[i];
+        return x[5];
     }
 
     private void drawScale(float maxValue, Canvas canvas, Paint scaleLevelsPaint){
@@ -250,11 +252,11 @@ public class MaterialHistogram extends View {
         return (mWidth-2*mBarSpacing)/(mBarNumber*9-1);
     }
 
-    public void setValuesInteger(int array[]){
+    public void setValues(int array[]){
         int lengh = Array.getLength(array);
-        valuesInt = new ArrayList<>(lengh);
+        values = new ArrayList<>(lengh);
         for(int i=0; i<lengh; i++){
-            valuesInt.add(array[i]);
+            values.add(array[i]);
             if (array[i]>maxValue){
                 maxValue=array[i];
             }
@@ -281,49 +283,29 @@ public class MaterialHistogram extends View {
         updateLayout();
     }
 
-    public void setValuesInteger(ArrayList<Integer> arrayList){
-        int lengh = arrayList.size();
-        valuesInt = new ArrayList<>(lengh);
-        for (int i=0; i<lengh; i++){
-            valuesInt.add(arrayList.get(i));
-            if (maxValue < valuesInt.get(i)) {
-                maxValue = valuesInt.get(i);
-            }
-
-        }
-
-        //(lengh+1) is for a little spacing before and after the first and second bar
-        /*if(!mBarAdaptiveThickness) {
-            mWidth = (lengh + 1) * mBarThickness + (lengh - 1) * mBarPadding;
-            invalidate();
-            requestLayout();
-        }*/
-        updateLayout();
-
-    }
-
-    /*
-    public void setValuesFloat(float array[]){
+    public void setValues(float array[]){
         int lengh = Array.getLength(array);
-        valuesFloat = new ArrayList<Float>(lengh);
+        values = new ArrayList<>(lengh);
         for(int i=0; i<lengh; i++){
-            valuesFloat.add(array[i]);
+            values.add(array[i]);
             if (array[i]>maxValue){
                 maxValue=array[i];
             }
         }
-        //(lengh+1) is for a little spacing before anc after the first and second bar
-        if(!mBarAdaptiveThickness) {
-            mWidth = (lengh + 1) * mBarThickness + (lengh - 1) * mBarPadding;
-            invalidate();
-            requestLayout();
-        }
+        updateLayout();
     }
 
-    public void setValueFloat(ArrayList<Float> arrayList){
-        valuesFloat = new ArrayList<Float>(arrayList.size());
+    public void setValues(ArrayList<? extends Number> arrayList){
+        int lengh = arrayList.size();
+        values = new ArrayList<>(lengh);
+        for(int i=0; i<lengh; i++){
+            values.add(arrayList.get(i));
+            if (arrayList.get(i).floatValue()>maxValue){
+                maxValue=arrayList.get(i).floatValue();
+            }
+        }
+        updateLayout();
     }
-    */
 
     private void updateLayout(){
 
@@ -331,7 +313,7 @@ public class MaterialHistogram extends View {
             if(desiredWidth > 0){
                 mWidth = desiredWidth;
             } else {
-                int lengh = valuesInt.size();
+                int lengh = values.size();
                 mWidth = (lengh) * mBarThickness + (lengh - 1) * mBarPadding + 2 * mBarSpacing;
             }
         } else {
@@ -396,8 +378,8 @@ public class MaterialHistogram extends View {
         return mBarColor;
     }
 
-    public ArrayList<Integer> getValuesInteger() {
-        return valuesInt;
+    public ArrayList getValuesInteger() {
+        return values;
     }
 
     /*
