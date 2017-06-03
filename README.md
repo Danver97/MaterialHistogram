@@ -42,6 +42,8 @@ Actually, the related method is supposed to adjust both thickness and padding in
 
 ```app:target_value="float"``` attribute represent, while showing some stats, a value compared to which the values displayed have to stay below or above. ```app:chart_show_average="boolean"``` allows to display a line representing the average of the values displayed on the histogram.
 
+![materialhistogram-3](https://cloud.githubusercontent.com/assets/28715404/26755465/1e4d7a50-488e-11e7-91d0-a0205d107042.png)
+
 ## Public fields and methods
 
 ```java
