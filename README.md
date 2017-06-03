@@ -1,11 +1,12 @@
 # MaterialHistogram
 A great customizable histogram for Android apps.
 
-Note: this is a preview and it's not ready yet. If you are trying to use this repo, it could eventually not work. I'm still new in GitHub :D
+Note: this is a preview and it's not ready yet.
 
 ## Installation
+Download the zip, unzip it and import it in Android Studio. Then add the following lines to your app's grandle file:
 ```
-compile 'com.danver97:MaterialHistogram'
+compile project(':materialhistogram')
 ```
 ## Usage
 
@@ -23,9 +24,12 @@ Include this material histogram library in your layout:
                             app:bars_thickness="dimension"
                             app:bars_thickness_adaptive="boolean"
                             app:bars_corner="dimension"
+                            app:target_value="float"
+                            app:target_color="color"
                             app:axis_show="boolean"
                             app:chart_alignment="center|left|right"
-                            app:chart_show_scale="boolean"/>
+                            app:chart_show_scale="boolean"
+                            app:chart_show_average="boolean"/>
 ```
 
 ![materialhistogram](https://cloud.githubusercontent.com/assets/28715404/26629481/e95eef5a-4602-11e7-83c5-a033aff04eeb.png)
@@ -35,6 +39,8 @@ The ```app:bars_thickness_adaptive="boolean"``` attribute set on ```"true"``` ma
 ![materialhistogram-2](https://cloud.githubusercontent.com/assets/28715404/26695775/6252f37a-470c-11e7-959a-bc64699c6222.png)
 
 Actually, the related method is supposed to adjust both thickness and padding in order to have a thickness:padding ratio of 8:1 (because it looks better). In the examble above only thickness have been changed.
+
+```app:target_value="float"``` attribute represent, while showing some stats, a value compared to which the values displayed have to stay below or above. ```app:chart_show_average="boolean"``` allows to display a line representing the average of the values displayed on the histogram.
 
 ## Public fields and methods
 
@@ -59,7 +65,10 @@ Actually, the related method is supposed to adjust both thickness and padding in
   public void setBarAdaptiveThickness(boolean status);
   
   public void setShowAverage(boolean status);
-  public void setAverageColor(@ColorInt int color)
+  public void setAverageColor(@ColorInt int color);
+  
+  public void setTargetValue(float value);
+  public void setTargetValueColor(@ColorInt int color);
   
   public void setChartAlignment(int alignment);
   
@@ -85,10 +94,12 @@ Actually, the related method is supposed to adjust both thickness and padding in
   public float getAverageValue();
   public boolean getShowAverageStatus();
   public int getAverageColor();
+  
+  public float getTargetValue();
+  public int getTargetValueColor();
 
 ```
 
 ## Next
 
 - Add orientation settings
-- Add target value line
