@@ -48,25 +48,22 @@ Actually, the related method is supposed to adjust both thickness and padding in
   //Setters
   
   public void setValues(int array[]);
-  
   public void setValues(float array[]);
-  
   public void setValues(ArrayList<? extends Number> arrayList);
   
   public void setBarColor(@ColorInt int color);
   
   public void setBarCorner(float dp);
-  
   public void setBarThickness(float dp);
-  
   public void setBarPadding(float dp);
-  
   public void setBarAdaptiveThickness(boolean status);
+  
+  public void setShowAverage(boolean status);
+  public void setAverageColor(@ColorInt int color)
   
   public void setChartAlignment(int alignment);
   
   public void setHeight(int dpHeight);
-  
   public void setWidth(int dpWidth);
   
   //Getters
@@ -74,7 +71,6 @@ Actually, the related method is supposed to adjust both thickness and padding in
   public int getBarColor();
   
   public ArrayList getValues();
-  
   public float getMaxValue();
   
   public int getBarNumber();
@@ -82,17 +78,17 @@ Actually, the related method is supposed to adjust both thickness and padding in
   public int getChartAlignment();
   
   public boolean getBarAdaptiveThicknessStatus();
-  
   public int getBarThicknessDp();
-  
   public int getBarPaddingDp();
-  
   public int getBarCornerDp();
+  
+  public float getAverageValue();
+  public boolean getShowAverageStatus();
+  public int getAverageColor();
 
 ```
 
 ## Next
 
 - Add orientation settings
-- Add average value line
 - Add target value line
