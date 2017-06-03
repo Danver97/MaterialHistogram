@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
@@ -37,8 +39,9 @@ public class MaterialHistogram extends View {
     private boolean mChartShowScale;
     private boolean mChartShowAverage;
     private boolean mChartOrientation;
-    private boolean mTargetLimitShow;
-    private int mTargetLimitValue;
+    private boolean mTargetValueShow;
+    private float mTargetValue;
+    private int mTargetValueColor;
     private int mBarSpacing = convertDpToPixel(8);
     private boolean mAxisShow;
     private int mAverageColor;
@@ -55,6 +58,8 @@ public class MaterialHistogram extends View {
     private Paint mLinePaint;
     private Paint mScaleLevelsPaint;
     private Paint mAverageValuePaint;
+    private Paint mTargetValuePaint;
+
     private ArrayList values;
 
     public MaterialHistogram(Context context, AttributeSet attrs){
@@ -76,9 +81,10 @@ public class MaterialHistogram extends View {
             mChartShowScale =a.getBoolean(R.styleable.MaterialHistogram_chart_show_scale,false);
             mChartShowAverage =a.getBoolean(R.styleable.MaterialHistogram_chart_show_average,false);
             mAverageColor = a.getColor(R.styleable.MaterialHistogram_average_color,0xFF3399FF);
+            mTargetValue = a.getFloat(R.styleable.MaterialHistogram_target_limit_value, 0);
+            mTargetValueShow = mTargetValue > 0;
+            mTargetValueColor = a.getColor(R.styleable.MaterialHistogram_target_color, 0x44000000);
             //TODO: implement this
-            mTargetLimitShow = a.getBoolean(R.styleable.MaterialHistogram_target_limit_show, false);
-            mTargetLimitValue =a.getInteger(R.styleable.MaterialHistogram_target_limit_value, 15);
             mChartOrientation = a.getInteger(R.styleable.MaterialHistogram_chart_orientation, 0) == 0;
 
         } finally {
@@ -106,6 +112,12 @@ public class MaterialHistogram extends View {
         mAverageValuePaint.setColor(mAverageColor);
         mAverageValuePaint.setStyle(Paint.Style.STROKE);
         mAverageValuePaint.setStrokeWidth(convertDpToPixel(1.0f));
+
+        mTargetValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mTargetValuePaint.setColor(mTargetValueColor);
+        mTargetValuePaint.setStyle(Paint.Style.STROKE);
+        mTargetValuePaint.setPathEffect(new DashPathEffect(new float[] {10f, 10f}, 0));
+        mTargetValuePaint.setStrokeWidth(convertDpToPixel(1.0f));
     }
 
     @Override
@@ -197,8 +209,12 @@ public class MaterialHistogram extends View {
             canvas.drawRoundRect(mBarShape, mBarCorner, mBarCorner, mBarsPaint);
         }
 
+        if(mTargetValueShow){
+            drawTargetValue(mTargetValue, canvas, mTargetValuePaint);
+        }
+
         if(mChartShowAverage){
-            drawAverageValue(averageValue,canvas, mAverageValuePaint);
+            drawAverageValue(averageValue, canvas, mAverageValuePaint);
         }
 
         if (mAxisShow) {
@@ -258,9 +274,20 @@ public class MaterialHistogram extends View {
     }
 
     private void drawAverageValue(float averageValue, Canvas canvas, Paint averageValuePaint){
-        float avgHeight = fromValueToPixelHeight(averageValue, maxValue);
-        Log.w("Average", "" + averageValue);
-        canvas.drawLine(0.0f, avgHeight, mWidth, avgHeight, averageValuePaint);
+        if (averageValue!=0) {
+            float avgHeight = fromValueToPixelHeight(averageValue, maxValue);
+            canvas.drawLine(0.0f, avgHeight, mWidth, avgHeight, averageValuePaint);
+        }
+    }
+
+    private void drawTargetValue(float targetValue, Canvas canvas, Paint targetValuePaint){
+        if (targetValue>0){
+            float targetLineHeight = fromValueToPixelHeight(targetValue, maxValue);
+            Path path = new Path();
+            path.moveTo(0, targetLineHeight);
+            path.lineTo(mWidth, targetLineHeight);
+            canvas.drawPath(path, targetValuePaint);
+        }
     }
 
     private int barThickness(){
@@ -390,6 +417,20 @@ public class MaterialHistogram extends View {
         updateLayout();
     }
 
+    public void setTargetValue(float value){
+        if (value>0){
+            mTargetValue = value;
+            mTargetValueShow = true;
+            updateLayout();
+        }
+    }
+
+    public void setTargetValueColor(@ColorInt int color){
+        mTargetValueColor = color;
+        mTargetValuePaint.setColor(color);
+        updateLayout();
+    }
+
     public void setChartAlignment(int alignment){
         mChartAlignment = alignment;
         updateLayout();
@@ -456,6 +497,14 @@ public class MaterialHistogram extends View {
 
     public int getAverageColor(){
         return mAverageColor;
+    }
+
+    public float getTargetValue(){
+        return mTargetValue;
+    }
+
+    public int getTargetValueColor(){
+        return mTargetValueColor;
     }
 
 }

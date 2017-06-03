@@ -7,8 +7,8 @@
         <attr name="bars_thickness_adaptive" format="boolean"/>
         <attr name="bars_thickness" format="dimension"/>
         <attr name="bars_padding" format="dimension"/>
-        <attr name="target_limit_show" format="boolean"/>
-        <attr name="target_limit_value" format="integer"/>
+        <attr name="target_limit_value" format="float"/>
+        <attr name="target_color" format="color"/>
         <attr name="axis_show" format="boolean"/>
         <attr name="chart_show_scale" format="boolean"/>
         <attr name="chart_show_average" format="boolean"/>
