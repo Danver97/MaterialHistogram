@@ -81,7 +81,7 @@ public class MaterialHistogram extends View {
             mChartShowScale =a.getBoolean(R.styleable.MaterialHistogram_chart_show_scale,false);
             mChartShowAverage =a.getBoolean(R.styleable.MaterialHistogram_chart_show_average,false);
             mAverageColor = a.getColor(R.styleable.MaterialHistogram_average_color,0xFF3399FF);
-            mTargetValue = a.getFloat(R.styleable.MaterialHistogram_target_limit_value, 0);
+            mTargetValue = a.getFloat(R.styleable.MaterialHistogram_target_value, 0);
             mTargetValueShow = mTargetValue > 0;
             mTargetValueColor = a.getColor(R.styleable.MaterialHistogram_target_color, 0x44000000);
             //TODO: implement this
