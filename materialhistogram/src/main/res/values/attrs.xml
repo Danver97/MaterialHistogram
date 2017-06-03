@@ -11,6 +11,8 @@
         <attr name="target_limit_value" format="integer"/>
         <attr name="axis_show" format="boolean"/>
         <attr name="chart_show_scale" format="boolean"/>
+        <attr name="chart_show_average" format="boolean"/>
+        <attr name="average_color" format="color"/>
         <attr name="chart_alignment" format="enum">
             <enum name="center" value="0"/>
             <enum name="left" value="1"/>

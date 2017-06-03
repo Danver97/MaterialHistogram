@@ -35,24 +35,27 @@ public class MaterialHistogram extends View {
     private int mBarPadding;
     private int mChartAlignment;
     private boolean mChartShowScale;
+    private boolean mChartShowAverage;
     private boolean mChartOrientation;
     private boolean mTargetLimitShow;
     private int mTargetLimitValue;
     private int mBarSpacing = convertDpToPixel(8);
     private boolean mAxisShow;
+    private int mAverageColor;
 
     public final static int CHART_ALIGNEMT_CENTER = 0;
     public final static int CHART_ALIGNEMT_LEFT = 1;
     public final static int CHART_ALIGNEMT_RIGHT = 2;
 
     private float maxValue=0;
+    private float averageValue = 0;
 
     private RectF mBarShape = new RectF();
     private Paint mBarsPaint;
     private Paint mLinePaint;
     private Paint mScaleLevelsPaint;
+    private Paint mAverageValuePaint;
     private ArrayList values;
-    private boolean valuesType;
 
     public MaterialHistogram(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -60,13 +63,6 @@ public class MaterialHistogram extends View {
                 attrs,
                 R.styleable.MaterialHistogram,
                 0, 0);
-        /*
-        values.add(0);
-        values.add(6);
-        values.add(10);
-        values.add(5);
-        values.add(4);
-        */
 
         try {
             mBarNumber = a.getInteger(R.styleable.MaterialHistogram_bars_number, 5);
@@ -78,6 +74,8 @@ public class MaterialHistogram extends View {
             mChartAlignment = a.getInteger(R.styleable.MaterialHistogram_chart_alignment, 0);
             mAxisShow = a.getBoolean(R.styleable.MaterialHistogram_axis_show, true);
             mChartShowScale =a.getBoolean(R.styleable.MaterialHistogram_chart_show_scale,false);
+            mChartShowAverage =a.getBoolean(R.styleable.MaterialHistogram_chart_show_average,false);
+            mAverageColor = a.getColor(R.styleable.MaterialHistogram_average_color,0xFF3399FF);
             //TODO: implement this
             mTargetLimitShow = a.getBoolean(R.styleable.MaterialHistogram_target_limit_show, false);
             mTargetLimitValue =a.getInteger(R.styleable.MaterialHistogram_target_limit_value, 15);
@@ -103,6 +101,11 @@ public class MaterialHistogram extends View {
         mScaleLevelsPaint.setColor(0xFFBDBDBD);
         mScaleLevelsPaint.setStyle(Paint.Style.STROKE);
         mScaleLevelsPaint.setStrokeWidth(convertDpToPixel(1.0f));
+
+        mAverageValuePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mAverageValuePaint.setColor(mAverageColor);
+        mAverageValuePaint.setStyle(Paint.Style.STROKE);
+        mAverageValuePaint.setStrokeWidth(convertDpToPixel(1.0f));
     }
 
     @Override
@@ -193,6 +196,11 @@ public class MaterialHistogram extends View {
 
             canvas.drawRoundRect(mBarShape, mBarCorner, mBarCorner, mBarsPaint);
         }
+
+        if(mChartShowAverage){
+            drawAverageValue(averageValue,canvas, mAverageValuePaint);
+        }
+
         if (mAxisShow) {
             canvas.drawLine(0.0f, mHeight, mWidth, mHeight, mLinePaint);
         }
@@ -249,6 +257,12 @@ public class MaterialHistogram extends View {
 
     }
 
+    private void drawAverageValue(float averageValue, Canvas canvas, Paint averageValuePaint){
+        float avgHeight = fromValueToPixelHeight(averageValue, maxValue);
+        Log.w("Average", "" + averageValue);
+        canvas.drawLine(0.0f, avgHeight, mWidth, avgHeight, averageValuePaint);
+    }
+
     private int barThickness(){
         return ((mWidth-mBarSpacing) - (mBarNumber - 1)*mBarPadding)/(mBarNumber + 1);
     }
@@ -262,9 +276,11 @@ public class MaterialHistogram extends View {
         values = new ArrayList<>(lengh);
         for(int i=0; i<lengh; i++){
             values.add(array[i]);
+            averageValue += array[i];
             if (array[i]>maxValue){
                 maxValue=array[i];
             }
+            averageValue /= lengh;
         }
 
         //(lengh+1) is for a little spacing before and after the first and second bar
@@ -293,10 +309,12 @@ public class MaterialHistogram extends View {
         values = new ArrayList<>(lengh);
         for(int i=0; i<lengh; i++){
             values.add(array[i]);
+            averageValue += array[i];
             if (array[i]>maxValue){
                 maxValue=array[i];
             }
         }
+        averageValue /= lengh;
         updateLayout();
     }
 
@@ -305,10 +323,12 @@ public class MaterialHistogram extends View {
         values = new ArrayList<>(lengh);
         for(int i=0; i<lengh; i++){
             values.add(arrayList.get(i));
+            averageValue += arrayList.get(i).floatValue();
             if (arrayList.get(i).floatValue()>maxValue){
                 maxValue=arrayList.get(i).floatValue();
             }
         }
+        averageValue /= lengh;
         updateLayout();
     }
 
@@ -356,6 +376,17 @@ public class MaterialHistogram extends View {
 
     public void setBarAdaptiveThickness(boolean status){
         mBarAdaptiveThickness = status;
+        updateLayout();
+    }
+
+    public void setShowAverage(boolean status){
+        mChartShowAverage = status;
+        updateLayout();
+    }
+
+    public void setAverageColor(@ColorInt int color){
+        mAverageColor = color;
+        mAverageValuePaint.setColor(color);
         updateLayout();
     }
 
@@ -413,6 +444,18 @@ public class MaterialHistogram extends View {
 
     public int getBarCornerDp(){
         return converPixelToDp((int) mBarCorner);
+    }
+
+    public float getAverageValue(){
+        return averageValue;
+    }
+
+    public boolean getShowAverageStatus(){
+        return mChartShowAverage;
+    }
+
+    public int getAverageColor(){
+        return mAverageColor;
     }
 
 }
