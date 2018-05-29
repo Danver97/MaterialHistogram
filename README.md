@@ -1,7 +1,5 @@
 # MaterialHistogram
-A great customizable histogram for Android apps.
-
-Note: this is a preview and it's not ready yet.
+A great customizable histogram baseline for Android apps.
 
 ## Installation
 Download the zip, unzip it and import it in Android Studio. Then add the following lines to your app's grandle file:
